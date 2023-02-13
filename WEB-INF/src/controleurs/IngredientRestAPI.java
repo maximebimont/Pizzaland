@@ -54,20 +54,47 @@ public class IngredientRestAPI extends HttpServlet {
 			out.print(ing.getName());
 		}
         return;
-	}
-
+    }
+	
 	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-		res.setContentType("application/json;charset=UTF-8");
 		PrintWriter out = res.getWriter();
-		ObjectMapper objectMapper = new ObjectMapper();
-		String data = new BufferedReader(new InputStreamReader(req.getInputStream())).readLine();
-		Ingredient ingredient = objectMapper.readValue(data, Ingredient.class);
-		if (dao.findById(ingredient.getId()) != null || dao.findByName(ingredient.getName()) != null) {
-			res.sendError(HttpServletResponse.SC_CONFLICT); // 409
+        res.setContentType("applications/json");
+        
+        ObjectMapper objectMapper = new ObjectMapper();
+        String data = new BufferedReader(new InputStreamReader(req.getInputStream())).readLine();
+        Ingredient newIngredient = objectMapper.readValue(data, Ingredient.class);
+        if(dao.findById(newIngredient.getId()) != null || dao.findByName(newIngredient.getName()) != null) {
+        	res.sendError(HttpServletResponse.SC_CONFLICT);
+        	return;
+        }
+        dao.save(newIngredient);
+        out.print(data);
+        out.close();
+	}
+	
+	public void doDelete(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		PrintWriter out = res.getWriter();
+        res.setContentType("applications/json");
+        
+        String pathInfo = req.getPathInfo();
+        if (pathInfo == null || pathInfo.equals("/")) {
+        	res.sendError(HttpServletResponse.SC_BAD_REQUEST);
+        	return;
+        }
+        
+        String[] splits = pathInfo.split("/");
+        if (splits.length != 2) {
+	        res.sendError(HttpServletResponse.SC_BAD_REQUEST);
+	        return;
+        }
+        
+        String id = splits[1];
+		if (dao.findById(Integer.parseInt(id))==null) {
+			res.sendError(HttpServletResponse.SC_NOT_FOUND);
 			return;
 		}
-		dao.save(ingredient);
-		out.print(data);
+		dao.remove(Integer.parseInt(id));
+		out.print("La donnée a bien été supprimée !");
 		out.close();
 	}
 }

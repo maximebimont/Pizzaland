@@ -1,0 +1,34 @@
+CREATE TABLE ingredients(
+id int, 
+name text, 
+constraint pk_id primary key(id)
+);
+
+INSERT INTO ingredients VALUES (1,'pomme de terre');
+INSERT INTO ingredients VALUES (2,'poivrons');
+INSERT INTO ingredients VALUES (3,'chorizo');
+INSERT INTO ingredients VALUES (4,'lardons');
+INSERT INTO ingredients VALUES (5,'aubergines');
+INSERT INTO ingredients VALUES (6,'champignons');
+INSERT INTO ingredients VALUES (7,'ananas');
+INSERT INTO ingredients VALUES (8,'fromage');
+INSERT INTO ingredients VALUES (9,'tomates');
+INSERT INTO ingredients VALUES (10,'olives');
+INSERT INTO ingredients VALUES (11,'oeufs');
+
+create table pizzasVide( 
+id int, 
+name text, 
+type text, 
+prix int,
+constraint pk_id primary key(id)
+);
+
+
+CREATE TABLE pizzas(
+idPizza int, 
+idIngredient int, 
+constraint pk_pizzas primary key(idPizza, idIngredient),
+constraint fk_idPizza foreign key(idPizza) references pizzasVide(id) on update cascade on delete cascade,
+constraint fk_idIngredient foreign key(idIngredient) references ingredients(id) on update cascade on delete cascade
+);

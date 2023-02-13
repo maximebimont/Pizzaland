@@ -82,5 +82,16 @@ public class IngredientDAO {
 			e.printStackTrace();
 		}
 	}
+	
+	public void remove(int id) {
+		try {
+			String query="DELETE FROM ingredients WHERE id = ? ";
+			PreparedStatement ps = con.prepareStatement(query);
+			ps.setInt(1,id);
+			ps.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 }
