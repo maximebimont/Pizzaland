@@ -43,14 +43,14 @@ public class IngredientRestAPI extends HttpServlet {
         }
         
         String id = splits[1];
-		if (dao.findById(Integer.parseInt(id))==null) {
+		if (dao.find(Integer.parseInt(id))==null) {
 			res.sendError(HttpServletResponse.SC_NOT_FOUND);
 			return;
 		}
 		if(splits.length == 2) {
-			out.print(objectMapper.writeValueAsString(dao.findById(Integer.parseInt(id))));
+			out.print(objectMapper.writeValueAsString(dao.find(Integer.parseInt(id))));
 		} else {
-			Ingredient ing = dao.findById(Integer.parseInt(id));
+			Ingredient ing = dao.find(Integer.parseInt(id));
 			out.print(ing.getName());
 		}
         return;
@@ -63,7 +63,7 @@ public class IngredientRestAPI extends HttpServlet {
         ObjectMapper objectMapper = new ObjectMapper();
         String data = new BufferedReader(new InputStreamReader(req.getInputStream())).readLine();
         Ingredient newIngredient = objectMapper.readValue(data, Ingredient.class);
-        if(dao.findById(newIngredient.getId()) != null || dao.findByName(newIngredient.getName()) != null) {
+        if(dao.find(newIngredient.getId()) != null || dao.find(newIngredient.getName()) != null) {
         	res.sendError(HttpServletResponse.SC_CONFLICT);
         	return;
         }
@@ -89,7 +89,7 @@ public class IngredientRestAPI extends HttpServlet {
         }
         
         String id = splits[1];
-		if (dao.findById(Integer.parseInt(id))==null) {
+		if (dao.find(Integer.parseInt(id))==null) {
 			res.sendError(HttpServletResponse.SC_NOT_FOUND);
 			return;
 		}

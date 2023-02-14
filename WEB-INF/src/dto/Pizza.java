@@ -4,15 +4,15 @@ import java.util.List;
 
 public class Pizza {
 
-	private int id;
+	private int pid;
 	private String name;
 	private String type;
-	private int prix;
+	private double prix;
 	List<Ingredient> ingredients;
 
-	public Pizza(int id, String name, String type, int prix, List<Ingredient> ingredients) {
+	public Pizza(int id, String name, String type, double prix, List<Ingredient> ingredients) {
 		super();
-		this.id = id;
+		this.pid = id;
 		this.name = name;
 		this.type = type;
 		this.prix = prix;
@@ -24,11 +24,11 @@ public class Pizza {
 	}
 
 	public int getId() {
-		return id;
+		return pid;
 	}
 
 	public void setId(int id) {
-		this.id = id;
+		this.pid = id;
 	}
 
 	public String getName() {
@@ -47,11 +47,11 @@ public class Pizza {
 		this.type = type;
 	}
 
-	public int getPrix() {
+	public double getPrix() {
 		return prix;
 	}
 
-	public void setPrix(int prix) {
+	public void setPrix(double prix) {
 		this.prix = prix;
 	}
 
@@ -65,7 +65,7 @@ public class Pizza {
 
 	@Override
 	public String toString() {
-		return "Pizza [id=" + id + ", name=" + name + ", type=" + type + ", prix=" + prix + ", ingredients="
+		return "Pizza [id=" + pid + ", name=" + name + ", type=" + type + ", prix=" + prix + ", ingredients="
 				+ ingredients + "]";
 	}
 

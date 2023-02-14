@@ -1,34 +1,41 @@
 CREATE TABLE ingredients(
-id int, 
+iid int, 
 name text, 
-constraint pk_id primary key(id)
+price real,
+constraint pk_iid primary key(iid)
 );
 
-INSERT INTO ingredients VALUES (1,'pomme de terre');
-INSERT INTO ingredients VALUES (2,'poivrons');
-INSERT INTO ingredients VALUES (3,'chorizo');
-INSERT INTO ingredients VALUES (4,'lardons');
-INSERT INTO ingredients VALUES (5,'aubergines');
-INSERT INTO ingredients VALUES (6,'champignons');
-INSERT INTO ingredients VALUES (7,'ananas');
-INSERT INTO ingredients VALUES (8,'fromage');
-INSERT INTO ingredients VALUES (9,'tomates');
-INSERT INTO ingredients VALUES (10,'olives');
-INSERT INTO ingredients VALUES (11,'oeufs');
+INSERT INTO ingredients VALUES (1,'pomme de terre',1);
+INSERT INTO ingredients VALUES (2,'poivrons',1);
+INSERT INTO ingredients VALUES (3,'chorizo',1);
+INSERT INTO ingredients VALUES (4,'lardons',1);
+INSERT INTO ingredients VALUES (5,'aubergines',1);
+INSERT INTO ingredients VALUES (6,'champignons',1);
+INSERT INTO ingredients VALUES (7,'ananas',1);
+INSERT INTO ingredients VALUES (8,'fromage',1);
+INSERT INTO ingredients VALUES (9,'tomates',1);
+INSERT INTO ingredients VALUES (10,'olives',1);
+INSERT INTO ingredients VALUES (11,'oeufs',1);
 
 create table pizzasVide( 
-id int, 
+pid int, 
 name text, 
 type text, 
-prix int,
-constraint pk_id primary key(id)
+prix real,
+constraint pk_pid primary key(pid)
 );
 
+insert into pizzasVide values (1,'reine','brisé',9);
+insert into pizzasVide values (2,'margarita','brisé',8);
+insert into pizzasVide values (3,'napolitaine','brisé',10);
 
 CREATE TABLE pizzas(
 idPizza int, 
 idIngredient int, 
 constraint pk_pizzas primary key(idPizza, idIngredient),
-constraint fk_idPizza foreign key(idPizza) references pizzasVide(id) on update cascade on delete cascade,
-constraint fk_idIngredient foreign key(idIngredient) references ingredients(id) on update cascade on delete cascade
+constraint fk_idPizza foreign key(idPizza) references pizzasVide(pid) on update cascade on delete cascade,
+constraint fk_idIngredient foreign key(idIngredient) references ingredients(iid) on update cascade on delete cascade
 );
+
+INSERT INTO pizzas VALUES (1,4986);
+INSERT INTO pizzas VALUES (2,89);

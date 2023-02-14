@@ -2,13 +2,15 @@ package dto;
 
 public class Ingredient {
 
-	private int id;
+	private int iid;
 	private String name;
+	private double price;
 
-	public Ingredient(int id, String name) {
+	public Ingredient(int id, String name, double price) {
 		super();
-		this.id = id;
+		this.iid = id;
 		this.name = name;
+		this.price = price;
 	}
 	
 	public Ingredient() {
@@ -16,11 +18,11 @@ public class Ingredient {
 	}
 
 	public int getId() {
-		return id;
+		return iid;
 	}
 
 	public void setId(int id) {
-		this.id = id;
+		this.iid = id;
 	}
 
 	public String getName() {
@@ -30,10 +32,18 @@ public class Ingredient {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	public double getPrice() {
+		return price;
+	}
+
+	public void setPrice(double price) {
+		this.price = price;
+	}
 
 	@Override
 	public String toString() {
-		return "id=" + id + ", name=" + name;
+		return "id=" + iid + ", name=" + name + ", price=" + price;
 	}
 
 }

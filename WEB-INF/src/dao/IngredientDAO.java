@@ -21,7 +21,7 @@ public class IngredientDAO {
 		con = new DS().getConnection();
 	}
 
-	public Ingredient findByName(String name) {
+	public Ingredient find(String name) {
 		Ingredient ingredient = null;
 		try {
 			String query = "SELECT * FROM ingredients WHERE name = ?";
@@ -29,23 +29,23 @@ public class IngredientDAO {
 			ps.setString(1, name);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
-				ingredient = new Ingredient(rs.getInt("id"), name);
+				ingredient = new Ingredient(rs.getInt("id"), name, rs.getInt("price"));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return ingredient;
 	}
-	
-	public Ingredient findById(int id) {
+
+	public Ingredient find(int id) {
 		Ingredient ingredient = null;
 		try {
-			String query = "SELECT * FROM ingredients WHERE id = ?";
+			String query = "SELECT * FROM ingredients WHERE iid = ?";
 			PreparedStatement ps = con.prepareStatement(query);
 			ps.setInt(1, id);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
-				ingredient = new Ingredient(id, rs.getString("name"));
+				ingredient = new Ingredient(id, rs.getString("name"), rs.getInt("price"));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -56,14 +56,15 @@ public class IngredientDAO {
 	public List<Ingredient> findAll() {
 		List<Ingredient> list = new ArrayList<>();
 		String query = "SELECT * FROM ingredients";
-		String id, name;
+		String id, name, price;
 		try {
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery(query);
 			while (rs.next()) {
 				id = rs.getString(1);
 				name = rs.getString(2);
-				list.add(new Ingredient(Integer.parseInt(id), name));
+				price = rs.getString(3);
+				list.add(new Ingredient(Integer.parseInt(id), name, Double.parseDouble(price)));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -73,21 +74,22 @@ public class IngredientDAO {
 
 	public void save(Ingredient ingredient) {
 		try {
-			String query = "INSERT INTO ingredients VALUES( ? , ?)";
+			String query = "INSERT INTO ingredients VALUES( ? , ?, ?)";
 			PreparedStatement ps = con.prepareStatement(query);
 			ps.setInt(1, ingredient.getId());
 			ps.setString(2, ingredient.getName());
+			ps.setDouble(3, ingredient.getPrice());
 			ps.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void remove(int id) {
 		try {
-			String query="DELETE FROM ingredients WHERE id = ? ";
+			String query = "DELETE FROM ingredients WHERE id = ? ";
 			PreparedStatement ps = con.prepareStatement(query);
-			ps.setInt(1,id);
+			ps.setInt(1, id);
 			ps.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();

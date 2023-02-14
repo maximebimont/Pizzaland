@@ -22,59 +22,62 @@ public class PizzaDAO {
 		con = new DS().getConnection();
 	}
 
-	public Pizza findByName(String name) {
+	public Pizza find(int id) {
 		Pizza pizza = null;
+		ArrayList<Ingredient> ingredients = new ArrayList<Ingredient>();
 		try {
-			String query = "SELECT * FROM pizzas WHERE name = ?";
-			PreparedStatement ps = con.prepareStatement(query);
-			ps.setString(1, name);
+			String queryPizza = "SELECT * FROM pizzasvide WHERE id = ? ";
+			String queryIngredients = "SELECT * FROM pizzas JOIN ingredients ON pizzas.idingredient = ingredients.iid"
+					+ "WHERE pizzas.idpizza = ? ";
+			PreparedStatement ps = con.prepareStatement(queryPizza);
+			PreparedStatement psIngredients = con.prepareStatement(queryIngredients);
+			ps.setInt(1,id);
 			ResultSet rs = ps.executeQuery();
-//			if (rs.next()) {
-//				pizza = new Pizza(rs.getInt("id"), name, rs.getString("type"), rs.getInt("prix"),
-//						rs.getString("ingredient"));
-//			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return pizza;
-	}
-
-	public Pizza findById(int id) {
-		Pizza pizza = null;
-		try {
-			String query = "SELECT * FROM pizzas WHERE id = ?";
-			PreparedStatement ps = con.prepareStatement(query);
-			ps.setInt(1, id);
-			ResultSet rs = ps.executeQuery();
-//			if (rs.next()) {
-//				pizza = new Pizza(id, rs.getString("name"), rs.getString("type"), rs.getInt("prix"), rs.getString("ingredient");
-//			}
-		} catch (Exception e) {
+			if(rs.next()){
+				psIngredients.setInt(1,id);
+				ResultSet rsIngredients = psIngredients.executeQuery();
+				while (rsIngredients.next()) {
+					ingredients.add(new Ingredient(Integer.parseInt(rsIngredients.getString("iid")),
+							rsIngredients.getString("name"),Double.parseDouble(rsIngredients.getString("price"))));
+				}
+				pizza = new Pizza(id,rs.getString("name"),rs.getString("type"),rs.getDouble("prix"),ingredients);
+			}
+		} catch(Exception e) {
 			e.printStackTrace();
 		}
 		return pizza;
 	}
 
 	public List<Pizza> findAll() {
-		List<Pizza> list = new ArrayList<>();
-		String query = "SELECT * FROM pizzas";
-		String id, name, type, prix;
-		List<Ingredient> ingredients = new ArrayList<Ingredient>();
+		String query = "SELECT * FROM pizzasvide";
+		String queryIng = "SELECT * FROM pizzas AS p JOIN ingredients AD i ON p.idpizza = i.iid WHERE p.idpizza = ? ";
+		int id;
+		String name, type;
+		double price;
+		List<Pizza> listPizza = new ArrayList<Pizza>();
+		List<Ingredient> ingredients;
 		try {
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery(query);
-//			while (rs.next()) {
-//				id = rs.getString(1);
-//				name = rs.getString(2);
-//				type = rs.getString(3);
-//				prix = rs.getString(4);
-//				ingredients = rs.getString(5);
-//				list.add(new Pizza(Integer.parseInt(id), name , type, Integer.parseInt(prix),type,ingredients));
-//			}
+			PreparedStatement psIng = con.prepareStatement(queryIng);
+			while(rs.next()) {
+				id = rs.getInt(1);
+				name = rs.getString(2);
+				type = rs.getString(3);
+				price = rs.getDouble(4);
+				ingredients =  new ArrayList<Ingredient>();
+				psIng.setInt(1,id);
+				ResultSet rsIng = psIng.executeQuery();
+				while (rsIng.next()) {
+					ingredients.add(new Ingredient(rsIng.getInt("iid"),
+							rsIng.getString("name"),rsIng.getDouble("price")));
+				}
+				listPizza.add(new Pizza(id, name, type, price, ingredients));
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return list;
+		return listPizza;
 	}
 
 	public void save(Pizza Pizza) {
