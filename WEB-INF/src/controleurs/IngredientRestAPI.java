@@ -68,7 +68,7 @@ public class IngredientRestAPI extends HttpServlet {
         	return;
         }
         dao.save(newIngredient);
-        out.print(data);
+        out.print("La donnée a bien été ajoutée !");
         out.close();
 	}
 	

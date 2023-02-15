@@ -7,15 +7,15 @@ public class Pizza {
 	private int pid;
 	private String name;
 	private String type;
-	private double prix;
+	private double price;
 	List<Ingredient> ingredients;
 
-	public Pizza(int id, String name, String type, double prix, List<Ingredient> ingredients) {
+	public Pizza(int id, String name, String type, double price, List<Ingredient> ingredients) {
 		super();
 		this.pid = id;
 		this.name = name;
 		this.type = type;
-		this.prix = prix;
+		this.price = price;
 		this.ingredients = ingredients;
 	}
 
@@ -47,12 +47,12 @@ public class Pizza {
 		this.type = type;
 	}
 
-	public double getPrix() {
-		return prix;
+	public double getPrice() {
+		return price;
 	}
 
-	public void setPrix(double prix) {
-		this.prix = prix;
+	public void setPrice(double price) {
+		this.price = price;
 	}
 
 	public List<Ingredient> getIngredients() {
@@ -65,7 +65,7 @@ public class Pizza {
 
 	@Override
 	public String toString() {
-		return "Pizza [id=" + pid + ", name=" + name + ", type=" + type + ", prix=" + prix + ", ingredients="
+		return "Pizza [id=" + pid + ", name=" + name + ", type=" + type + ", price=" + price + ", ingredients="
 				+ ingredients + "]";
 	}
 

@@ -17,26 +17,30 @@ INSERT INTO ingredients VALUES (9,'tomates',1);
 INSERT INTO ingredients VALUES (10,'olives',1);
 INSERT INTO ingredients VALUES (11,'oeufs',1);
 
-create table pizzasVide( 
+create table pizzas( 
 pid int, 
 name text, 
 type text, 
-prix real,
+price real,
 constraint pk_pid primary key(pid)
 );
 
-insert into pizzasVide values (1,'reine','brisé',9);
-insert into pizzasVide values (2,'margarita','brisé',8);
-insert into pizzasVide values (3,'napolitaine','brisé',10);
+insert into pizzas values (1,'reine','brisé',9);
+insert into pizzas values (2,'margarita','brisé',8);
+insert into pizzas values (3,'napolitaine','brisé',10);
 
-CREATE TABLE pizzas(
-idPizza int, 
-idIngredient int, 
+CREATE TABLE confection(
+pizza int, 
+ings int, 
 finalPrice real,
-constraint pk_pizzas primary key(idPizza, idIngredient),
-constraint fk_idPizza foreign key(idPizza) references pizzasVide(pid) on update cascade on delete cascade,
-constraint fk_idIngredient foreign key(idIngredient) references ingredients(iid) on update cascade on delete cascade
+constraint pk_confection primary key(pizza, ings),
+constraint fk_pizza foreign key(pizza) references pizzas(pid) on update cascade on delete cascade,
+constraint fk_ings foreign key(ings) references ingredients(iid) on update cascade on delete cascade
 );
 
-INSERT INTO pizzas VALUES (1,4986);
-INSERT INTO pizzas VALUES (2,89);
+INSERT INTO confection VALUES (1,4);
+INSERT INTO confection VALUES (1,9);
+INSERT INTO confection VALUES (1,8);
+INSERT INTO confection VALUES (1,6);
+INSERT INTO confection VALUES (2,8);
+INSERT INTO confection VALUES (2,9);

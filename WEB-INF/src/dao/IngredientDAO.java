@@ -29,7 +29,7 @@ public class IngredientDAO {
 			ps.setString(1, name);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
-				ingredient = new Ingredient(rs.getInt("id"), name, rs.getInt("price"));
+				ingredient = new Ingredient(rs.getInt("iid"), name, rs.getInt("price"));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -56,15 +56,15 @@ public class IngredientDAO {
 	public List<Ingredient> findAll() {
 		List<Ingredient> list = new ArrayList<>();
 		String query = "SELECT * FROM ingredients";
-		String id, name, price;
+		String iid, name, price;
 		try {
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery(query);
 			while (rs.next()) {
-				id = rs.getString(1);
+				iid = rs.getString(1);
 				name = rs.getString(2);
 				price = rs.getString(3);
-				list.add(new Ingredient(Integer.parseInt(id), name, Double.parseDouble(price)));
+				list.add(new Ingredient(Integer.parseInt(iid), name, Double.parseDouble(price)));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -87,7 +87,7 @@ public class IngredientDAO {
 
 	public void remove(int id) {
 		try {
-			String query = "DELETE FROM ingredients WHERE id = ? ";
+			String query = "DELETE FROM ingredients WHERE iid = ? ";
 			PreparedStatement ps = con.prepareStatement(query);
 			ps.setInt(1, id);
 			ps.executeUpdate();
