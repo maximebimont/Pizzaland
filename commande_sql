@@ -32,6 +32,7 @@ insert into pizzasVide values (3,'napolitaine','brisé',10);
 CREATE TABLE pizzas(
 idPizza int, 
 idIngredient int, 
+finalPrice real,
 constraint pk_pizzas primary key(idPizza, idIngredient),
 constraint fk_idPizza foreign key(idPizza) references pizzasVide(pid) on update cascade on delete cascade,
 constraint fk_idIngredient foreign key(idIngredient) references ingredients(iid) on update cascade on delete cascade
