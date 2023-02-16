@@ -1,5 +1,6 @@
 package dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Pizza {
@@ -19,6 +20,10 @@ public class Pizza {
 		this.ingredients = ingredients;
 	}
 
+	public Pizza(int id, String name, String type, double price) {
+		this(id, name, type, price, new ArrayList<Ingredient>());
+	}
+	
 	public Pizza() {
 		super();
 	}

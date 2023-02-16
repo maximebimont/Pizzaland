@@ -41,21 +41,30 @@ public class PizzaRestAPI extends HttpServlet {
         }
         
         String[] splits = pathInfo.split("/");
-        if (splits.length != 2 && (splits.length != 3 || (splits.length == 3 && !splits[2].equals("name")))) {
+        if (splits.length != 2 && (splits.length != 3 || (splits.length == 3 && 
+        		(!splits[2].equals("name") && !splits[2].equals("finalprice"))))) {
 	        res.sendError(HttpServletResponse.SC_BAD_REQUEST);
 	        return;
         }
         
         String id = splits[1];
 		if (dao.find(Integer.parseInt(id))==null) {
-			res.sendError(HttpServletResponse.SC_NOT_FOUND); 
+			res.sendError(HttpServletResponse.SC_NOT_FOUND);
 			return;
 		}
 		if(splits.length == 2) {
 			out.print(objectMapper.writeValueAsString(dao.find(Integer.parseInt(id))));
 		} else {
 			Pizza pizza = dao.find(Integer.parseInt(id));
-			out.print(pizza.getName());
+			if (splits[2].equals("name")){
+				out.print(pizza.getName());
+			} else {
+				double price = pizza.getPrice();
+				for(Ingredient i: pizza.getIngredients()) {
+					price += i.getPrice();
+				}
+				out.print(price);
+			}
 		}
         return;
     }
@@ -170,9 +179,53 @@ public class PizzaRestAPI extends HttpServlet {
 		out.print("La donnée a bien été supprimée !");
 		out.close();
 	}
-//	
-//	public void doPatch(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-//		
-//	}
+	
+	public void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		if (req.getMethod().equalsIgnoreCase("PATCH")) {
+			doPatch(req, res);
+		} else {
+			super.service(req, res);
+		}
+	}
+	
+	public void doPatch(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		PrintWriter out = res.getWriter();
+        res.setContentType("applications/json");
+        
+        String pathInfo = req.getPathInfo();
+        if (pathInfo == null || pathInfo.equals("/")) {
+        	res.sendError(HttpServletResponse.SC_BAD_REQUEST);
+        	return;
+        }
+        
+        String[] splits = pathInfo.split("/");
+        if (splits.length != 2) {
+	        res.sendError(HttpServletResponse.SC_BAD_REQUEST);
+	        return;
+        }
+        
+        String id = splits[1];
+        try {
+        	Integer.parseInt(id);
+        } catch (Exception e) {
+        	res.sendError(HttpServletResponse.SC_BAD_REQUEST);
+	        return;
+        }
+        if (dao.find(Integer.parseInt(id))==null) {
+			res.sendError(HttpServletResponse.SC_NOT_FOUND);
+			return;
+		}
+        
+        ObjectMapper objectMapper = new ObjectMapper();
+        String data = new BufferedReader(new InputStreamReader(req.getInputStream())).readLine();
+        double price = -1;
+        try {
+        	price = objectMapper.readValue(data, Double.class);
+        } catch (Exception e) {
+        	res.sendError(HttpServletResponse.SC_BAD_REQUEST);
+	        return;
+        }
+        dao.updatePrice(Integer.parseInt(id), price);
+	}
 
 }

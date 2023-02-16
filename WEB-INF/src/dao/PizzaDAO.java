@@ -31,18 +31,18 @@ public class PizzaDAO {
 					+ " WHERE confection.pizza = ? ";
 			PreparedStatement ps = con.prepareStatement(queryPizza);
 			PreparedStatement psIngredients = con.prepareStatement(queryIngredients);
-			ps.setInt(1,id);
+			ps.setInt(1, id);
 			ResultSet rs = ps.executeQuery();
-			if(rs.next()){
-				psIngredients.setInt(1,id);
+			if (rs.next()) {
+				psIngredients.setInt(1, id);
 				ResultSet rsIngredients = psIngredients.executeQuery();
 				while (rsIngredients.next()) {
 					ingredients.add(new Ingredient(Integer.parseInt(rsIngredients.getString("iid")),
-							rsIngredients.getString("name"),Double.parseDouble(rsIngredients.getString("price"))));
+							rsIngredients.getString("name"), Double.parseDouble(rsIngredients.getString("price"))));
 				}
-				pizza = new Pizza(id,rs.getString("name"),rs.getString("type"),rs.getDouble("price"),ingredients);
+				pizza = new Pizza(id, rs.getString("name"), rs.getString("type"), rs.getDouble("price"), ingredients);
 			}
-		} catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return pizza;
@@ -54,24 +54,24 @@ public class PizzaDAO {
 		String queryIngredients = "SELECT * FROM confection JOIN ingredients ON confection.ings = ingredients.iid"
 				+ " WHERE confection.pizza = ? ";
 		int id;
-		String name,type;
+		String name, type;
 		double price;
 		ArrayList<Ingredient> ingredients;
 		try {
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery(query);
 			PreparedStatement psIngredients = con.prepareStatement(queryIngredients);
-			while(rs.next()) {
+			while (rs.next()) {
 				id = rs.getInt(1);
 				name = rs.getString(2);
 				type = rs.getString(3);
 				price = rs.getDouble(4);
-				ingredients =  new ArrayList<Ingredient>();
-				psIngredients.setInt(1,id);
+				ingredients = new ArrayList<Ingredient>();
+				psIngredients.setInt(1, id);
 				ResultSet rsIngredients = psIngredients.executeQuery();
 				while (rsIngredients.next()) {
-					ingredients.add(new Ingredient(rsIngredients.getInt("iid"),
-							rsIngredients.getString("name"),rsIngredients.getDouble("price")));
+					ingredients.add(new Ingredient(rsIngredients.getInt("iid"), rsIngredients.getString("name"),
+							rsIngredients.getDouble("price")));
 				}
 				list.add(new Pizza(id, name, type, price, ingredients));
 			}
@@ -88,7 +88,7 @@ public class PizzaDAO {
 			ps.setInt(1, pid);
 			ps.setInt(2, iid);
 			ResultSet rs = ps.executeQuery();
-			if(rs.next()) {
+			if (rs.next()) {
 				return true;
 			}
 		} catch (Exception e) {
@@ -96,12 +96,11 @@ public class PizzaDAO {
 		}
 		return false;
 	}
-	
 
 	public void save(Pizza pizza) {
 		try {
-			String query="INSERT INTO pizzas VALUES( ? , ? , ? , ? )";
-			String queryIngredients="INSERT INTO confection VALUES( ? , ? )";
+			String query = "INSERT INTO pizzas VALUES( ? , ? , ? , ? )";
+			String queryIngredients = "INSERT INTO confection VALUES( ? , ? )";
 			PreparedStatement ps = con.prepareStatement(query);
 			PreparedStatement psIngredients = con.prepareStatement(queryIngredients);
 			ps.setInt(1, pizza.getId());
@@ -109,7 +108,7 @@ public class PizzaDAO {
 			ps.setString(3, pizza.getType());
 			ps.setDouble(4, pizza.getPrice());
 			ps.executeUpdate();
-			for(Ingredient i: pizza.getIngredients()) {
+			for (Ingredient i : pizza.getIngredients()) {
 				psIngredients.setInt(1, pizza.getId());
 				psIngredients.setInt(2, i.getId());
 				psIngredients.executeUpdate();
@@ -118,7 +117,7 @@ public class PizzaDAO {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void addIng(int pid, int iid) {
 		try {
 			String query = "INSERT INTO confection VALUES ( ? , ? )";
@@ -145,15 +144,27 @@ public class PizzaDAO {
 			e.printStackTrace();
 		}
 	}
-	
 
-	
 	public void removeIng(int pid, int iid) {
 		try {
 			String query = "DELETE FROM confection WHERE pizza = ? AND ings = ? ";
 			PreparedStatement ps = con.prepareStatement(query);
 			ps.setInt(1, pid);
 			ps.setInt(2, iid);
+			ps.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void updatePrice(int id, double price) {
+		try {
+			if (price == -1)
+				return;
+			String query = "UPDATE pizzas SET price = ? WHERE pid = ? ";
+			PreparedStatement ps = con.prepareStatement(query);
+			ps.setDouble(1, price);
+			ps.setInt(2, id);
 			ps.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
