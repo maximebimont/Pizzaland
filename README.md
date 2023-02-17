@@ -8,6 +8,7 @@ Loïc Lecointe
 GRP I
 </pre>
 
+Nous réalison le projet sur un même pc, c'est donc pour cela que tous les commits sont réalisé par Maxime Bimont.
 
 # Gestions de la base de donnée.
 
@@ -18,6 +19,10 @@ Pour notre base de donnée nous avons décidé de créer trois table:
 -   Une deuxième table `Pizzas` qui va stoquait toutes nos pizzas sans les ingredients. Pour cela elle a : un ID, un Nom, un type de pattes est un prix.
 
 -  Une  troisème table `confection` qui va permettre de faire lacociation de nos pizzas avec leurs ingredients et de stoqué le prix final de nos pizzas (ingredients + prix de base de la pizzas). Pour cela elle récupère l'id de nos pizzas, l'id des ingredients et un colone finalPrice. 
+
+- Une Quatrième table `Utilisateur` qui stoque tous nos utilisateurs.
+
+- Une cinquième table ``
 
 # Liste des commandes Utilisées 
 
@@ -62,7 +67,7 @@ $ http GET http://localhost:8080/pizzaland/pizzas/{id}
 permet de récuperer la pizzas qui correspond à l'id passé en paramettre.
 
 ```bash
-$ http POST http://localhost:8080/pizzaland/pizzas id={...} name="{...}" type="{...}" price={...}
+$ curl -X POST http://localhost:8080/pizzaland/pizzas -H "Content-Type: application/json" -d '{"id":{...}, "name": "{...}", "type": "{...}","price":{...}, "ingredients":[{"id":{...}}, {"id":{...}}, {"id":{...}}]}'
 ```
 permet d'ajouter une pizzas à la base de donnée avec ces différents paramettres.  
 
@@ -90,3 +95,15 @@ permet de supprimer un ingredients à une pizza.
 $ http GET http://localhost:8080/pizzaland/pizzas/{id}/prixfinal
 ```
 permet de recupérer le prixfinal d'une pizzas, c'est à dire le prix des ingredients + le prix de base de la pizza.
+
+## Commandes
+
+```bash
+$ http GET http://localhost:8080/pizzaland/commandes
+```
+permet de récupérer la liste de toutes les commandes en cours.
+
+```bash
+$ http GET http://localhost:8080/pizzaland/commandes/{id}
+```
+permet de récupérer le détail d'un commande grâce a sont id passé en paramettre.
