@@ -77,6 +77,7 @@ public class PizzaDAO {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			System.out.println("\n-----" + e + "-----\n");
 		}
 		return list;
 	}
