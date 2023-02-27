@@ -28,6 +28,7 @@ public class CommandeRestAPI extends HttpServlet {
         String pathInfo = req.getPathInfo();
         if (pathInfo == null || pathInfo.equals("/")) {
         	Collection<Commande> commandes = dao.findAll();
+        	System.out.println(commandes);
         	String jsonstring = objectMapper.writeValueAsString(commandes);
         	out.print(jsonstring);
         	return;
@@ -52,6 +53,28 @@ public class CommandeRestAPI extends HttpServlet {
 		}
 	}
 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 //	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 //		PrintWriter out = res.getWriter();
 //        res.setContentType("applications/json");
