@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dto.Commande;
+import dto.Ingredient;
 import dto.Pizza;
 
 public class CommandeDAO {
@@ -27,9 +28,10 @@ public class CommandeDAO {
 	public Commande find(int id) {
 		Commande commande = null;
 		ArrayList<Pizza> pizzas = new ArrayList<Pizza>();
+		ArrayList<Ingredient> ingredients = new ArrayList<Ingredient>();
 		try {
 			String query = "SELECT * FROM commande WHERE cid = ? ";
-			String queryPizzas = "SELECT * FROM commandefini AS c JOIN pizzas AS p ON c.pid = p.pid"
+			String queryPizzas = "SELECT * FROM commandefini AS c JOIN pizzas AS p ON c.cid = p.pid"
 					+ " WHERE c.cid = ? ";
 			PreparedStatement ps = con.prepareStatement(query);
 			PreparedStatement psp = con.prepareStatement(queryPizzas);
@@ -39,10 +41,9 @@ public class CommandeDAO {
 				psp.setInt(1,id);
 				ResultSet rsp = psp.executeQuery();
 				while (rsp.next()) {
-					pizzas.add(new Pizza(rsp.getInt("pid"),rsp.getString("name"),
-							rsp.getString("type"),rsp.getDouble("price")));
+					pizzas.add(dao.find(rsp.getInt("pid")));
 				}
-				commande = new Commande(id,rs.getInt("uid"),LocalDate.parse(rs.getString("date")),pizzas);
+				commande = new Commande(id,rs.getInt("uid"),rs.getString("date"),pizzas);
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -53,9 +54,9 @@ public class CommandeDAO {
 	public List<Commande> findAll() {
 		List<Commande> list = new ArrayList<Commande>();
 		String query = "SELECT * FROM commande";
-		String queryPizza = "SELECT * FROM commandefini AS c JOIN pizzas AS p ON c.pid = p.pid WHERE c.pid = ?";
+		String queryPizza = "SELECT * FROM commandefini AS c JOIN pizzas AS p ON c.pid = p.pid WHERE c.cid = ?";
 		int cid, uid;
-		LocalDate date;
+		String date;
 		List<Pizza> pizzas;
 
 		try {
@@ -65,12 +66,11 @@ public class CommandeDAO {
 			while (rs.next()) {
 				cid = rs.getInt(1);
 				uid = rs.getInt(2);
-				date = LocalDate.parse(rs.getString(3));
+				date = rs.getString(3);
 				pizzas = new ArrayList<Pizza>();
 				psp.setInt(1, cid);
 				ResultSet rsp = psp.executeQuery();
 				while (rsp.next()) {
-					System.out.println(rsp.getInt("pid"));
 					pizzas.add(dao.find(rsp.getInt("pid")));
 				}
 				list.add(new Commande(cid, uid, date, pizzas));
@@ -81,26 +81,26 @@ public class CommandeDAO {
 
 		return list;
 	}
-
-//	public void save(Commande commande) {
-//		try {
-//			String query="INSERT INTO commandes VALUES(  ? , ? , ? )";
-//			String queryPizzas="INSERT INTO pizzasCommande VALUES( ? , ? )";
-//			PreparedStatement ps = con.prepareStatement(query);
-//			PreparedStatement psPizzas = con.prepareStatement(queryPizzas);
-//			ps.setInt(1, commande.getId());
-//			ps.setInt(2, commande.getUtilisateurID());
-//			ps.setString(3, commande.getDateCommande().toString());
-//			ps.executeUpdate();
-//			for(Pizza pizza: commande.getPizzas()) {
-//				psPizzas.setInt(1, commande.getId());
-//				psPizzas.setInt(2, pizza.getId());
-//				psPizzas.executeUpdate();
-//			}
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
+	
+	public void save(Commande commande) {
+		try {
+			String query="INSERT INTO commande VALUES(  ? , ? , ? )";
+			String queryPizzas="INSERT INTO commandefini VALUES( ? , ? )";
+			PreparedStatement ps = con.prepareStatement(query);
+			PreparedStatement psPizzas = con.prepareStatement(queryPizzas);
+			ps.setInt(1, commande.getCid());
+			ps.setInt(2, commande.getUid());
+			ps.setString(3, commande.getDate());
+			ps.executeUpdate();
+			for(Pizza pizza: commande.getPizzas()) {
+				psPizzas.setInt(1, commande.getCid());
+				psPizzas.setInt(2, pizza.getId());
+				psPizzas.executeUpdate();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 //	
 //	public void delete(int id) {
 //		try {
@@ -117,17 +117,17 @@ public class CommandeDAO {
 //		}
 //	}
 //	
-//	public void addPizza(int cid, int pid) {
-//		try {
-//			String query = "INSERT INTO pizzasCommande VALUES ( ? , ? )";
-//			PreparedStatement ps = con.prepareStatement(query);
-//			ps.setInt(1, cid);
-//			ps.setInt(2, pid);
-//			ps.executeUpdate();
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
+	public void addPizza(int cid, int pid) {
+		try {
+			String query = "INSERT INTO commandefini VALUES ( ? , ? )";
+			PreparedStatement ps = con.prepareStatement(query);
+			ps.setInt(1, cid);
+			ps.setInt(2, pid);
+			ps.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 //	
 //	public boolean hasPizza(int cid, int pid) {
 //		try {

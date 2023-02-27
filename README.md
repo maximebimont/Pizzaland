@@ -35,8 +35,7 @@ Pour notre base de données, nous avons décidé de l'organiser ainsi :
 ```bash
 $ http GET http://localhost:8080/pizzaland/ingredients
 ```
-
-Permet de récuperer la liste de tous les ingrédients contenue dans notre base de donnée. 
+permet de récuperer la liste de tous les ingrédients contenue dans notre base de donnée. 
 
 ```bash
 $ http GET http://localhost:8080/pizzaland/ingredients/{id}
@@ -47,20 +46,17 @@ Permet de récuperer l'ingredients qui correspond à l'id passé en paramettre.
 ```bash
 $ http GET http://localhost:8080/pizzaland/ingredients/{id}/name
 ```
-
-Permet de récuperer le nom de l'ingredients qui correspond à l'id passé en paramettre.
+permet de récuperer le nom de l'ingredients qui correspond à l'id passé en paramettre.
 
 ```bash
 $ http POST http://localhost:8080/pizzaland/ingredients id={...} name="{...}" price={...}
 ```
-
-Permet d'ajouter un ingrédients à la base de donnée avec ces différents paramettres.  
+permet d'ajouter un ingrédients à la base de donnée avec ces différents paramettres.  
 
 ```bash
 $ http DELETE http://localhost:8080/pizzaland/ingredients/{id}
 ```
-
-Permet de supprimer un ingrédients de la base de donnée grâce a l'id passé en paramettre  
+permet de supprimer un ingrédients de la base de donnée grâce a l'id passé en paramettre  
 
 ### 🍕 Les pizzas :
 
@@ -114,21 +110,4 @@ Permet de récupérer la liste de toutes les commandes en cours.
 ```bash
 $ http GET http://localhost:8080/pizzaland/commandes/{id}
 ```
-Permet de récupérer le détail d'une commande grâce à sont id passé en paramettre.
-
-```bash
-$ http POST http://localhost:8080/pizzaland/commandes
-```
-Permet d'ajouter une nouvelle commande.
-
-```bash
-$ http GET http://localhost:8080/pizzaland/commandes/{id}/prixfinal
-```
-Permet de recupérer le prixfinal d'une commandes.
-
-## 👥 Authors
-
-<pre>
-Maxime Bimont
-Loïc Lecointe
-</pre>
+permet de récupérer le détail d'un commande grâce a sont id passé en paramettre.

@@ -8,10 +8,10 @@ public class Commande {
 
 	private int cid;
 	private int uid;
-	private LocalDate date;
+	private String date;
 	private List<Pizza> pizzas;
 
-	public Commande(int cid, int uid, LocalDate date, List<Pizza> pizzas) {
+	public Commande(int cid, int uid, String date, List<Pizza> pizzas) {
 		super();
 		this.cid = cid;
 		this.uid = uid;
@@ -19,7 +19,7 @@ public class Commande {
 		this.pizzas = pizzas;
 	}
 
-	public Commande(int cid, int uid, LocalDate date) {
+	public Commande(int cid, int uid, String date) {
 		super();
 		this.cid = cid;
 		this.uid = uid;
@@ -47,11 +47,11 @@ public class Commande {
 		this.uid = uid;
 	}
 
-	public LocalDate getDate() {
+	public String getDate() {
 		return date;
 	}
 
-	public void setDate(LocalDate date) {
+	public void setDate(String date) {
 		this.date = date;
 	}
 
