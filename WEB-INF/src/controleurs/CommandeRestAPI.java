@@ -83,6 +83,7 @@ public class CommandeRestAPI extends HttpServlet {
             out.print(data);
         	return;
         }
+        
         String[] splits = pathInfo.split("/");
         if (splits.length != 2) {
 	        res.sendError(HttpServletResponse.SC_BAD_REQUEST);
@@ -110,6 +111,7 @@ public class CommandeRestAPI extends HttpServlet {
 			return;
 		}
 		dao.addPizza(Integer.parseInt(id), pizzaID);
+        out.print("La donnée a bien été ajoutée !");
 		out.close();
 	} 
 }

@@ -35,17 +35,17 @@ public class CommandeDAO {
 					+ " WHERE c.cid = ? ";
 			PreparedStatement ps = con.prepareStatement(query);
 			PreparedStatement psp = con.prepareStatement(queryPizzas);
-			ps.setInt(1,id);
+			ps.setInt(1, id);
 			ResultSet rs = ps.executeQuery();
-			if(rs.next()){
-				psp.setInt(1,id);
+			if (rs.next()) {
+				psp.setInt(1, id);
 				ResultSet rsp = psp.executeQuery();
 				while (rsp.next()) {
 					pizzas.add(dao.find(rsp.getInt("pid")));
 				}
-				commande = new Commande(id,rs.getInt("uid"),rs.getString("date"),pizzas);
+				commande = new Commande(id, rs.getInt("uid"), rs.getString("date"), pizzas);
 			}
-		} catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return commande;
@@ -81,42 +81,27 @@ public class CommandeDAO {
 
 		return list;
 	}
-	
+
 	public void save(Commande commande) {
 		try {
-			String query="INSERT INTO commande VALUES(  ? , ? , ? )";
-			String queryPizzas="INSERT INTO commandefini VALUES( ? , ? )";
+			String query = "INSERT INTO commande VALUES(  ? , ? , ? )";
+			String queryPizzas = "INSERT INTO commandefini VALUES( ? , ? )";
 			PreparedStatement ps = con.prepareStatement(query);
-			PreparedStatement psPizzas = con.prepareStatement(queryPizzas);
+			PreparedStatement psp = con.prepareStatement(queryPizzas);
 			ps.setInt(1, commande.getCid());
 			ps.setInt(2, commande.getUid());
 			ps.setString(3, commande.getDate());
 			ps.executeUpdate();
-			for(Pizza pizza: commande.getPizzas()) {
-				psPizzas.setInt(1, commande.getCid());
-				psPizzas.setInt(2, pizza.getId());
-				psPizzas.executeUpdate();
+			for (Pizza pizza : commande.getPizzas()) {
+				psp.setInt(1, commande.getCid());
+				psp.setInt(2, pizza.getId());
+				psp.executeUpdate();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-//	
-//	public void delete(int id) {
-//		try {
-//			String query = "DELETE FROM commandes WHERE id = ? ";
-//			String queryPizzas = "DELETE FROM pizzasCommande WHERE cid = ? ";
-//			PreparedStatement ps = con.prepareStatement(query);
-//			PreparedStatement psPizzas = con.prepareStatement(queryPizzas);
-//			ps.setInt(1, id);
-//			psPizzas.setInt(1, id);
-//			psPizzas.executeUpdate();
-//			ps.executeUpdate();
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
-//	
+
 	public void addPizza(int cid, int pid) {
 		try {
 			String query = "INSERT INTO commandefini VALUES ( ? , ? )";
@@ -128,33 +113,5 @@ public class CommandeDAO {
 			e.printStackTrace();
 		}
 	}
-//	
-//	public boolean hasPizza(int cid, int pid) {
-//		try {
-//			String query = "SELECT FROM pizzasCommande WHERE cid = ? AND pid = ? ";
-//			PreparedStatement ps = con.prepareStatement(query);
-//			ps.setInt(1, cid);
-//			ps.setInt(2, pid);
-//			ResultSet rs = ps.executeQuery();
-//			if(rs.next()) {
-//				return true;
-//			}
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		return false;
-//	}
-//	
-//	public void removePizza(int cid, int pid) {
-//		try {
-//			String query = "DELETE FROM pizzasCommande WHERE cid = ? AND pid = ? ";
-//			PreparedStatement ps = con.prepareStatement(query);
-//			ps.setInt(1, cid);
-//			ps.setInt(2, pid);
-//			ps.executeUpdate();
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
 
 }
