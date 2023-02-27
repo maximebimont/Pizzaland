@@ -82,47 +82,25 @@ public class CommandeDAO {
 		return list;
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-//	public void save(Commande commande) {
-//		try {
-//			String query="INSERT INTO commandes VALUES(  ? , ? , ? )";
-//			String queryPizzas="INSERT INTO pizzasCommande VALUES( ? , ? )";
-//			PreparedStatement ps = con.prepareStatement(query);
-//			PreparedStatement psPizzas = con.prepareStatement(queryPizzas);
-//			ps.setInt(1, commande.getId());
-//			ps.setInt(2, commande.getUtilisateurID());
-//			ps.setString(3, commande.getDateCommande().toString());
-//			ps.executeUpdate();
-//			for(Pizza pizza: commande.getPizzas()) {
-//				psPizzas.setInt(1, commande.getId());
-//				psPizzas.setInt(2, pizza.getId());
-//				psPizzas.executeUpdate();
-//			}
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
+	public void save(Commande commande) {
+		try {
+			String query="INSERT INTO commande VALUES(  ? , ? , ? )";
+			String queryPizzas="INSERT INTO commandefini VALUES( ? , ? )";
+			PreparedStatement ps = con.prepareStatement(query);
+			PreparedStatement psPizzas = con.prepareStatement(queryPizzas);
+			ps.setInt(1, commande.getCid());
+			ps.setInt(2, commande.getUid());
+			ps.setString(3, commande.getDate());
+			ps.executeUpdate();
+			for(Pizza pizza: commande.getPizzas()) {
+				psPizzas.setInt(1, commande.getCid());
+				psPizzas.setInt(2, pizza.getId());
+				psPizzas.executeUpdate();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 //	
 //	public void delete(int id) {
 //		try {
@@ -139,17 +117,17 @@ public class CommandeDAO {
 //		}
 //	}
 //	
-//	public void addPizza(int cid, int pid) {
-//		try {
-//			String query = "INSERT INTO pizzasCommande VALUES ( ? , ? )";
-//			PreparedStatement ps = con.prepareStatement(query);
-//			ps.setInt(1, cid);
-//			ps.setInt(2, pid);
-//			ps.executeUpdate();
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
+	public void addPizza(int cid, int pid) {
+		try {
+			String query = "INSERT INTO commandefini VALUES ( ? , ? )";
+			PreparedStatement ps = con.prepareStatement(query);
+			ps.setInt(1, cid);
+			ps.setInt(2, pid);
+			ps.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 //	
 //	public boolean hasPizza(int cid, int pid) {
 //		try {
