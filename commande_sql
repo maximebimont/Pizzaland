@@ -57,7 +57,7 @@ INSERT INTO utilisateur VALUES (2,'Loïc');
 CREATE TABLE commande(
 	cid int,
 	uid int,
-	date date,
+	date text,
 	primary key(cid),
 	foreign key(uid) references utilisateur(uid) on update cascade on delete cascade
 );
