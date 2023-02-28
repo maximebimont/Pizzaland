@@ -47,17 +47,18 @@ INSERT INTO confection VALUES (2,9);
 
 CREATE TABLE utilisateur(
 	uid int,
-	name text,
+	login text,
+	pwd text,
 	primary key(uid)
 );
 
-INSERT INTO utilisateur VALUES (1,'Maxime');
-INSERT INTO utilisateur VALUES (2,'Loïc');
+INSERT INTO utilisateur VALUES (1,'Maxime','maxime');
+INSERT INTO utilisateur VALUES (2,'Loïc','loic');
 
 CREATE TABLE commande(
 	cid int,
 	uid int,
-	date text,
+	date test,
 	primary key(cid),
 	foreign key(uid) references utilisateur(uid) on update cascade on delete cascade
 );
@@ -77,4 +78,3 @@ CREATE TABLE commandefini(
 INSERT INTO commandefini VALUES (1,1);
 INSERT INTO commandefini VALUES (1,2);
 INSERT INTO commandefini VALUES (2,2);
-
