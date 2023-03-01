@@ -49,11 +49,12 @@ CREATE TABLE utilisateur(
 	uid int,
 	login text,
 	pwd text,
+	role text,
 	primary key(uid)
 );
 
-INSERT INTO utilisateur VALUES (1,'Maxime','maxime');
-INSERT INTO utilisateur VALUES (2,'Loïc','loic');
+INSERT INTO utilisateur VALUES (1,'Maxime','maxime','admin');
+INSERT INTO utilisateur VALUES (2,'Loic','loic','user');
 
 CREATE TABLE commande(
 	cid int,

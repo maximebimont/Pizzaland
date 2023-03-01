@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.util.Base64;
 import java.util.Collection;
 
 import javax.servlet.ServletException;
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dao.IngredientDAO;
+import dao.UserDAO;
 import dto.Ingredient;
 
 @SuppressWarnings("serial")
@@ -22,7 +24,8 @@ import dto.Ingredient;
 public class IngredientRestAPI extends HttpServlet {
 
 	IngredientDAO dao = new IngredientDAO();
-
+	UserDAO userDao = new UserDAO();
+	
 	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		PrintWriter out = res.getWriter();
 		res.setContentType("applications/json");
@@ -59,7 +62,27 @@ public class IngredientRestAPI extends HttpServlet {
 	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		PrintWriter out = res.getWriter();
 		res.setContentType("applications/json");
-
+		
+		String authorization = req.getHeader("Authorization");
+		if (authorization == null || !authorization.startsWith("BASIC")) {
+			res.sendError(HttpServletResponse.SC_EXPECTATION_FAILED);
+			return;
+		}
+		String token = authorization.substring("Basic".length()).trim();
+		byte[] base64 = Base64.getDecoder().decode(token);
+		String[] lm = (new String(base64)).split(":");
+		String login = lm[0];
+		String pwd = lm[1];
+		
+		if (!userDao.verifyLogin(login, pwd)) {
+			res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+			return;
+		}
+		if (!userDao.verifyRole(login, pwd)) {
+			res.sendError(HttpServletResponse.SC_FORBIDDEN);
+			return;
+		}
+		
 		ObjectMapper objectMapper = new ObjectMapper();
 		String data = new BufferedReader(new InputStreamReader(req.getInputStream())).readLine();
 		Ingredient newIngredient = objectMapper.readValue(data, Ingredient.class);
@@ -75,6 +98,26 @@ public class IngredientRestAPI extends HttpServlet {
 	public void doDelete(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		PrintWriter out = res.getWriter();
 		res.setContentType("applications/json");
+		
+		String authorization = req.getHeader("Authorization");
+		if (authorization == null || !authorization.startsWith("BASIC")) {
+			res.sendError(HttpServletResponse.SC_EXPECTATION_FAILED);
+			return;
+		}
+		String token = authorization.substring("Basic".length()).trim();
+		byte[] base64 = Base64.getDecoder().decode(token);
+		String[] lm = (new String(base64)).split(":");
+		String login = lm[0];
+		String pwd = lm[1];
+		
+		if (!userDao.verifyLogin(login, pwd)) {
+			res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+			return;
+		}
+		if (!userDao.verifyRole(login, pwd)) {
+			res.sendError(HttpServletResponse.SC_FORBIDDEN);
+			return;
+		}
 
 		String pathInfo = req.getPathInfo();
 		if (pathInfo == null || pathInfo.equals("/")) {

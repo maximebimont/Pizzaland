@@ -192,6 +192,8 @@ public class PizzaRestAPI extends HttpServlet {
 		PrintWriter out = res.getWriter();
 		res.setContentType("applications/json");
 
+	
+
 		String pathInfo = req.getPathInfo();
 		if (pathInfo == null || pathInfo.equals("/")) {
 			res.sendError(HttpServletResponse.SC_BAD_REQUEST);
@@ -226,6 +228,8 @@ public class PizzaRestAPI extends HttpServlet {
 			return;
 		}
 		dao.updatePrice(Integer.parseInt(id), price);
+		out.println("La donnée a bien été modifiée !");
+		out.close();
 	}
 
 }
