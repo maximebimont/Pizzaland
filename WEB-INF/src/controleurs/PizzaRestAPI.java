@@ -11,6 +11,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
@@ -26,6 +27,33 @@ public class PizzaRestAPI extends HttpServlet {
 
 	PizzaDAO dao = new PizzaDAO();
 	IngredientDAO ingDao = new IngredientDAO();
+
+	public void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		PrintWriter out = res.getWriter();
+
+		// Token pour sécurité
+		String token = req.getParameter("token");
+
+		if (req.getMethod().equalsIgnoreCase("GET")) {
+			doGet(req, res);
+		} else if (JwtManager.tokenValid(token)) {
+			if (req.getMethod().equalsIgnoreCase("POST")) {
+				post(req, res);
+			} else if (req.getMethod().equalsIgnoreCase("DELETE")) {
+				delete(req, res);
+			} else {
+				super.service(req, res);
+			}
+		} else {
+			out.println("TOKEN incorrecte !");
+		}
+
+		if (req.getMethod().equalsIgnoreCase("PATCH")) {
+			doPatch(req, res);
+		} else {
+			super.service(req, res);
+		}
+	}
 
 	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		PrintWriter out = res.getWriter();
@@ -69,7 +97,7 @@ public class PizzaRestAPI extends HttpServlet {
 		return;
 	}
 
-	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+	public void post(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		PrintWriter out = res.getWriter();
 		res.setContentType("applications/json");
 
@@ -127,7 +155,7 @@ public class PizzaRestAPI extends HttpServlet {
 		out.close();
 	}
 
-	public void doDelete(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+	public void delete(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		PrintWriter out = res.getWriter();
 		res.setContentType("applications/json");
 
@@ -180,19 +208,9 @@ public class PizzaRestAPI extends HttpServlet {
 		out.close();
 	}
 
-	public void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-		if (req.getMethod().equalsIgnoreCase("PATCH")) {
-			doPatch(req, res);
-		} else {
-			super.service(req, res);
-		}
-	}
-
 	public void doPatch(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		PrintWriter out = res.getWriter();
 		res.setContentType("applications/json");
-
-	
 
 		String pathInfo = req.getPathInfo();
 		if (pathInfo == null || pathInfo.equals("/")) {

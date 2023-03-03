@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 import java.util.Collection;
 
 import javax.servlet.ServletException;
@@ -11,6 +12,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
@@ -27,7 +29,29 @@ public class CommandeRestAPI extends HttpServlet {
 	CommandeDAO dao = new CommandeDAO();
 	PizzaDAO pDao = new PizzaDAO();
 
-	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+	public void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		PrintWriter out = res.getWriter();
+		res.setContentType("application/json;charset=UTF-8");
+		// Token pour sécurité
+		String token = req.getParameter("token");
+		
+		JwtManager.verifToken(req, res);
+
+		if (JwtManager.tokenValid(token)) {
+			HttpSession session = req.getSession();
+			session.setAttribute("id", "" + JwtManager.getIdByToken(token));
+
+			if (req.getMethod().equalsIgnoreCase("GET")) {
+				get(req, res);
+			} else if (req.getMethod().equalsIgnoreCase("POST")) {
+				post(req, res);
+			}
+		} else {
+			out.println("TOKEN incorrecte !");
+		}
+	}
+
+	public void get(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		PrintWriter out = res.getWriter();
 		res.setContentType("applications/json");
 
@@ -60,7 +84,7 @@ public class CommandeRestAPI extends HttpServlet {
 		}
 	}
 
-	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+	public void post(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		PrintWriter out = res.getWriter();
 		res.setContentType("applications/json");
 
