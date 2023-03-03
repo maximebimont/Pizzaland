@@ -23,27 +23,6 @@ public class IngredientRestAPI extends HttpServlet {
 
 	IngredientDAO dao = new IngredientDAO();
 
-	public void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-		PrintWriter out = res.getWriter();
-
-		// Token pour sécurité
-		String token = req.getParameter("token");
-
-		if (req.getMethod().equalsIgnoreCase("GET")) {
-			doGet(req, res);
-		} else if (JwtManager.tokenValid(token)) {
-			if (req.getMethod().equalsIgnoreCase("POST")) {
-				post(req, res);
-			} else if (req.getMethod().equalsIgnoreCase("DELETE")) {
-				delete(req, res);
-			} else {
-				super.service(req, res);
-			}
-		} else {
-			out.println("TOKEN incorrecte !");
-		}
-	}
-
 	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		PrintWriter out = res.getWriter();
 		res.setContentType("applications/json");
@@ -77,9 +56,22 @@ public class IngredientRestAPI extends HttpServlet {
 		return;
 	}
 
-	public void post(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		PrintWriter out = res.getWriter();
 		res.setContentType("applications/json");
+
+		String authorization = req.getHeader("Authorization");
+		if (authorization == null || !authorization.startsWith("Basic")) {
+			res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+			return;
+		}
+
+		UserRestAPI users = new UserRestAPI();
+		String token = authorization.substring("Basic".length()).trim();
+		if (!users.verifToken(token)) {
+			res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+			return;
+		}
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		String data = new BufferedReader(new InputStreamReader(req.getInputStream())).readLine();
@@ -93,9 +85,22 @@ public class IngredientRestAPI extends HttpServlet {
 		out.close();
 	}
 
-	public void delete(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+	public void doDelete(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		PrintWriter out = res.getWriter();
 		res.setContentType("applications/json");
+		
+		String authorization = req.getHeader("Authorization");
+		if (authorization == null || !authorization.startsWith("Basic")) {
+			res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+			return;
+		}
+
+		UserRestAPI users = new UserRestAPI();
+		String token = authorization.substring("Basic".length()).trim();
+		if (!users.verifToken(token)) {
+			res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+			return;
+		}
 
 		String pathInfo = req.getPathInfo();
 		if (pathInfo == null || pathInfo.equals("/")) {
