@@ -81,7 +81,7 @@ public class IngredientRestAPI extends HttpServlet {
 			return;
 		}
 		dao.save(newIngredient);
-		out.print("La donnée a bien été ajoutée !");
+		out.println("The data has been added successfully !");
 		out.close();
 	}
 
@@ -120,7 +120,7 @@ public class IngredientRestAPI extends HttpServlet {
 			return;
 		}
 		dao.remove(Integer.parseInt(id));
-		out.print("La donnée a bien été supprimée !");
+		out.println("The data has been removed successfully !");
 		out.close();
 	}
 }

@@ -30,17 +30,23 @@ public class CommandeRestAPI extends HttpServlet {
 	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		PrintWriter out = res.getWriter();
 		res.setContentType("applications/json");
-		
+
 		String authorization = req.getHeader("Authorization");
 		if (authorization == null || !authorization.startsWith("Basic")) {
 			res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+			System.out.println("ici");
+			System.out.println("auth = " + authorization);
 			return;
 		}
 
 		UserRestAPI users = new UserRestAPI();
-		String token = authorization.substring("Basic".length()).trim();
+//		String token = authorization.substring("Basic".length()).trim();
+		String token = authorization.split(":")[1].trim();
+		out.print(token);
 		if (!users.verifToken(token)) {
 			res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+			System.out.println("la");
+			System.out.println("token = " + token);
 			return;
 		}
 
@@ -76,7 +82,7 @@ public class CommandeRestAPI extends HttpServlet {
 	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		PrintWriter out = res.getWriter();
 		res.setContentType("applications/json");
-		
+
 		String authorization = req.getHeader("Authorization");
 		if (authorization == null || !authorization.startsWith("Basic")) {
 			res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
@@ -137,7 +143,7 @@ public class CommandeRestAPI extends HttpServlet {
 			return;
 		}
 		dao.addPizza(Integer.parseInt(id), pizzaID);
-		out.print("La donnée a bien été ajoutée !");
+		out.print("The data has been added successfully !");
 		out.close();
 	}
 }

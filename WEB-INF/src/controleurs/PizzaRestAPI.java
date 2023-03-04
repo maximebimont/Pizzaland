@@ -147,7 +147,7 @@ public class PizzaRestAPI extends HttpServlet {
 			return;
 		}
 		dao.addIng(Integer.parseInt(id), ingredientID);
-		out.print("La donnée a bien été ajoutée !");
+		out.print("The data has been added successfully !");
 		out.close();
 	}
 
@@ -213,7 +213,7 @@ public class PizzaRestAPI extends HttpServlet {
 			}
 			dao.removeIng(Integer.parseInt(id), ingredientID);
 		}
-		out.print("La donnée a bien été supprimée !");
+		out.print("The data has been removed successfully !");
 		out.close();
 	}
 
@@ -268,7 +268,7 @@ public class PizzaRestAPI extends HttpServlet {
 			return;
 		}
 		dao.updatePrice(Integer.parseInt(id), price);
-		out.println("La donnée a bien été modifiée !");
+		out.println("The data has been changed successfully !");
 		out.close();
 	}
 
