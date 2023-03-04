@@ -85,7 +85,7 @@ public class IngredientDAO {
 		}
 	}
 
-	public void remove(int id) {
+	public void delete(int id) {
 		try {
 			String query = "DELETE FROM ingredients WHERE iid = ? ";
 			PreparedStatement ps = con.prepareStatement(query);

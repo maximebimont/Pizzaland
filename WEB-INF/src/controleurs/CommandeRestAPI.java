@@ -24,36 +24,17 @@ import dto.Pizza;
 @WebServlet("/commandes/*")
 public class CommandeRestAPI extends HttpServlet {
 
-	CommandeDAO dao = new CommandeDAO();
+	CommandeDAO cDao = new CommandeDAO();
 	PizzaDAO pDao = new PizzaDAO();
 
 	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		PrintWriter out = res.getWriter();
 		res.setContentType("applications/json");
 
-		String authorization = req.getHeader("Authorization");
-		if (authorization == null || !authorization.startsWith("Basic")) {
-			res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-			System.out.println("ici");
-			System.out.println("auth = " + authorization);
-			return;
-		}
-
-		UserRestAPI users = new UserRestAPI();
-//		String token = authorization.substring("Basic".length()).trim();
-		String token = authorization.split(":")[1].trim();
-		out.print(token);
-		if (!users.verifToken(token)) {
-			res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-			System.out.println("la");
-			System.out.println("token = " + token);
-			return;
-		}
-
 		ObjectMapper objectMapper = new ObjectMapper();
 		String pathInfo = req.getPathInfo();
 		if (pathInfo == null || pathInfo.equals("/")) {
-			Collection<Commande> commandes = dao.findAll();
+			Collection<Commande> commandes = cDao.findAll();
 			System.out.println(commandes);
 			String jsonstring = objectMapper.writeValueAsString(commandes);
 			out.print(jsonstring);
@@ -67,14 +48,14 @@ public class CommandeRestAPI extends HttpServlet {
 		}
 
 		String id = splits[1];
-		if (dao.find(Integer.parseInt(id)) == null) {
+		if (cDao.find(Integer.parseInt(id)) == null) {
 			res.sendError(HttpServletResponse.SC_NOT_FOUND);
 			return;
 		}
 		if (splits.length == 2) {
-			out.print(objectMapper.writeValueAsString(dao.find(Integer.parseInt(id))));
+			out.print(objectMapper.writeValueAsString(cDao.find(Integer.parseInt(id))));
 		} else {
-			Commande commande = dao.find(Integer.parseInt(id));
+			Commande commande = cDao.find(Integer.parseInt(id));
 			out.print(commande.getPrice());
 		}
 	}
@@ -107,11 +88,11 @@ public class CommandeRestAPI extends HttpServlet {
 			} catch (JsonParseException e) {
 				System.out.println(e.getMessage());
 			}
-			if (dao.find(newCommande.getCid()) != null) {
+			if (cDao.find(newCommande.getCid()) != null) {
 				res.sendError(HttpServletResponse.SC_CONFLICT);
 				return;
 			}
-			dao.save(newCommande);
+			cDao.post(newCommande);
 			out.print(data);
 			return;
 		}
@@ -129,7 +110,7 @@ public class CommandeRestAPI extends HttpServlet {
 			res.sendError(HttpServletResponse.SC_BAD_REQUEST);
 			return;
 		}
-		if (dao.find(Integer.parseInt(id)) == null) {
+		if (cDao.find(Integer.parseInt(id)) == null) {
 			System.out.println(id);
 			res.sendError(HttpServletResponse.SC_NOT_FOUND);
 			return;
@@ -142,8 +123,74 @@ public class CommandeRestAPI extends HttpServlet {
 			res.sendError(HttpServletResponse.SC_NOT_FOUND);
 			return;
 		}
-		dao.addPizza(Integer.parseInt(id), pizzaID);
-		out.print("The data has been added successfully !");
+		cDao.addPizza(Integer.parseInt(id), pizzaID);
+		out.println("The data has been added successfully !");
+		out.close();
+	}
+
+	public void doDelete(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		PrintWriter out = res.getWriter();
+		res.setContentType("applications/json");
+
+		String authorization = req.getHeader("Authorization");
+		if (authorization == null || !authorization.startsWith("Basic")) {
+			res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+			return;
+		}
+
+		UserRestAPI users = new UserRestAPI();
+		String token = authorization.substring("Basic".length()).trim();
+		if (!users.verifToken(token)) {
+			res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+			return;
+		}
+
+		String pathInfo = req.getPathInfo();
+		if (pathInfo == null || pathInfo.equals("/")) {
+			res.sendError(HttpServletResponse.SC_BAD_REQUEST);
+			return;
+		}
+
+		String[] splits = pathInfo.split("/");
+		if (splits.length != 2 && splits.length != 3) {
+			res.sendError(HttpServletResponse.SC_BAD_REQUEST);
+			return;
+		}
+
+		String id = splits[1];
+		try {
+			Integer.parseInt(id);
+		} catch (Exception e) {
+			res.sendError(HttpServletResponse.SC_BAD_REQUEST);
+			return;
+		}
+		if (cDao.find(Integer.parseInt(id)) == null) {
+			res.sendError(HttpServletResponse.SC_NOT_FOUND);
+			return;
+		}
+		if (splits.length == 2) {
+			cDao.delete(Integer.parseInt(id));
+		}
+		if (splits.length == 3) {
+			int pizzaID = 0;
+			try {
+				pizzaID = Integer.parseInt(splits[2]);
+			} catch (Exception e) {
+				res.sendError(HttpServletResponse.SC_BAD_REQUEST);
+				return;
+			}
+			if (pDao.find(pizzaID) == null) {
+				System.out.println(pizzaID);
+				res.sendError(HttpServletResponse.SC_NOT_FOUND);
+				return;
+			}
+			if (!cDao.hasPizza(Integer.parseInt(id), pizzaID)) {
+				res.sendError(HttpServletResponse.SC_BAD_REQUEST);
+				return;
+			}
+			cDao.removePizza(Integer.parseInt(id), pizzaID);
+		}
+		out.println("The data has been removed successfully !");
 		out.close();
 	}
 }

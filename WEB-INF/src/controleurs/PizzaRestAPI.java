@@ -30,17 +30,16 @@ public class PizzaRestAPI extends HttpServlet {
 	public void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		PrintWriter out = res.getWriter();
 
-		if (req.getMethod().equalsIgnoreCase("PATCH")) {
+		if (req.getMethod().equalsIgnoreCase("PATCH"))
 			doPatch(req, res);
-		} else {
+		else
 			super.service(req, res);
-		}
+
 	}
 
 	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		PrintWriter out = res.getWriter();
 		res.setContentType("applications/json");
-		
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		String pathInfo = req.getPathInfo();
@@ -83,7 +82,7 @@ public class PizzaRestAPI extends HttpServlet {
 	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		PrintWriter out = res.getWriter();
 		res.setContentType("applications/json");
-		
+
 		String authorization = req.getHeader("Authorization");
 		if (authorization == null || !authorization.startsWith("Basic")) {
 			res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
@@ -112,7 +111,7 @@ public class PizzaRestAPI extends HttpServlet {
 				res.sendError(HttpServletResponse.SC_CONFLICT);
 				return;
 			}
-			dao.save(newPizza);
+			dao.post(newPizza);
 			out.print(data);
 			return;
 		}
@@ -147,14 +146,14 @@ public class PizzaRestAPI extends HttpServlet {
 			return;
 		}
 		dao.addIng(Integer.parseInt(id), ingredientID);
-		out.print("The data has been added successfully !");
+		out.println("The data has been added successfully !");
 		out.close();
 	}
 
 	public void doDelete(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		PrintWriter out = res.getWriter();
 		res.setContentType("applications/json");
-		
+
 		String authorization = req.getHeader("Authorization");
 		if (authorization == null || !authorization.startsWith("Basic")) {
 			res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
@@ -192,7 +191,7 @@ public class PizzaRestAPI extends HttpServlet {
 			return;
 		}
 		if (splits.length == 2) {
-			dao.remove(Integer.parseInt(id));
+			dao.delete(Integer.parseInt(id));
 		}
 		if (splits.length == 3) {
 			int ingredientID = 0;
@@ -213,14 +212,14 @@ public class PizzaRestAPI extends HttpServlet {
 			}
 			dao.removeIng(Integer.parseInt(id), ingredientID);
 		}
-		out.print("The data has been removed successfully !");
+		out.println("The data has been removed successfully !");
 		out.close();
 	}
 
 	public void doPatch(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		PrintWriter out = res.getWriter();
 		res.setContentType("applications/json");
-		
+
 		String authorization = req.getHeader("Authorization");
 		if (authorization == null || !authorization.startsWith("Basic")) {
 			res.sendError(HttpServletResponse.SC_UNAUTHORIZED);

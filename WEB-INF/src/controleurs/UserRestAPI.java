@@ -23,35 +23,30 @@ public class UserRestAPI extends HttpServlet {
 	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		res.setContentType("application/json;charset=UTF-8");
 		PrintWriter out = res.getWriter();
-
 		String login = req.getParameter("login");
 		String pwd = req.getParameter("pwd");
 
 		try {
 			con = new DS().getConnection();
-
 			String query = "select * from utilisateur where login = ? and pwd = ?";
-
-			PreparedStatement smt = con.prepareStatement(query);
+			PreparedStatement ps = con.prepareStatement(query);
 
 			if (login == null || pwd == null) {
-				smt.setString(1, "login");
-				smt.setString(2, "pwd");
+				ps.setString(1, "login");
+				ps.setString(2, "pwd");
 			} else {
-				smt.setString(1, login);
-				smt.setString(2, pwd);
+				ps.setString(1, login);
+				ps.setString(2, pwd);
 			}
 
-			ResultSet rs = smt.executeQuery();
+			ResultSet rs = ps.executeQuery();
 
 			if (rs.next()) {
 				String s = login + ":" + pwd;
 				String encodedString = Base64.getEncoder().encodeToString(s.getBytes());
-
 				out.println("Token : " + encodedString);
-			} else {
+			} else
 				out.println("Vous êtes inconnu ici !");
-			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -65,27 +60,19 @@ public class UserRestAPI extends HttpServlet {
 		String[] splits = decodedString.split(":");
 		String login = splits[0];
 		String pwd = splits[1];
-
+		
 		try {
 			con = new DS().getConnection();
-
 			String query = "select * from utilisateur where login = ? and pwd = ?";
-
-			PreparedStatement smt = con.prepareStatement(query);
-
-			smt.setString(1, login);
-			smt.setString(2, pwd);
-
-			ResultSet rs = smt.executeQuery();
-
-			System.out.println("login : " + login);
-			System.out.println("pwd : " + pwd);
-			
+			PreparedStatement ps = con.prepareStatement(query);
+			ps.setString(1, login);
+			ps.setString(2, pwd);
+			ResultSet rs = ps.executeQuery();
 			return rs.next();
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
 		return false;
 	}
 }

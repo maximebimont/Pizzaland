@@ -119,7 +119,7 @@ public class IngredientRestAPI extends HttpServlet {
 			res.sendError(HttpServletResponse.SC_NOT_FOUND);
 			return;
 		}
-		dao.remove(Integer.parseInt(id));
+		dao.delete(Integer.parseInt(id));
 		out.println("The data has been removed successfully !");
 		out.close();
 	}
